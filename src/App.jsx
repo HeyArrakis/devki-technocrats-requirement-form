@@ -82,20 +82,10 @@ export default function App() {
 
           <div className="submit">
             {SHOW_PRICES && (
-              <div className="submit__total">
-                <span className="mono muted">Estimated Investment</span>
-                <span className="submit__amount" aria-live="polite">
-                  {estimate.hasFromPrices ? 'From ' : ''}{formatPrice(estimate.oneTimeTotal)}
-                  {estimate.monthlyTotal > 0 && <span className="submit__monthly"> + {formatPrice(estimate.monthlyTotal)} / month</span>}
-                </span>
-                {estimate.showCore && (
-                  <p className="submit__note">Includes the complete website revamp ({formatPrice(estimate.coreAmount)}) plus the services you ticked.</p>
-                )}
-                <p className="submit__note">
-                  This is an initial estimate based on your selected requirements. Final pricing will be confirmed after
-                  reviewing your requirements.
-                </p>
-              </div>
+              <p className="submit__note">
+                This is an initial estimate based on your selected requirements. Final pricing will be confirmed after
+                reviewing your requirements.
+              </p>
             )}
             <div className="submit__row">
               <button type="submit" className="btn btn--primary" disabled={status === 'sending'} aria-busy={status === 'sending'}>
@@ -110,7 +100,30 @@ export default function App() {
         </form>
       </main>
       <Footer />
+      {SHOW_PRICES && <PriceBar estimate={estimate} count={count} />}
     </>
+  )
+}
+
+/** Fixed to the bottom of the screen so the total is always visible while ticking. */
+function PriceBar({ estimate, count }) {
+  return (
+    <div className="pricebar" role="status" aria-live="polite" aria-atomic="true">
+      <div className="wrap pricebar__inner">
+        <div className="pricebar__left">
+          <span className="mono pricebar__label">Estimated Investment</span>
+          {/* key re-mounts the number on every change so the update animation replays */}
+          <span key={estimate.oneTimeTotal} className="pricebar__amount">
+            {estimate.hasFromPrices ? 'From ' : ''}{formatPrice(estimate.oneTimeTotal)}
+            {estimate.monthlyTotal > 0 && <span className="pricebar__monthly"> + {formatPrice(estimate.monthlyTotal)} / month</span>}
+          </span>
+        </div>
+        <span className="mono pricebar__meta">
+          {estimate.showCore && <>Website {formatPrice(estimate.coreAmount)} + </>}
+          {count} {count === 1 ? 'service' : 'services'}
+        </span>
+      </div>
+    </div>
   )
 }
 

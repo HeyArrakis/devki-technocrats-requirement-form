@@ -202,3 +202,31 @@ input:focus-visible + .box { outline: 2px solid var(--orange); outline-offset: 3
   *, *::before, *::after { animation: none !important; transition: none !important; }
 }
 .group--notes { padding-top: 12px; border-top: 1px solid var(--ink); }
+
+/* Fixed price bar */
+body:has(.pricebar) { padding-bottom: calc(76px + env(safe-area-inset-bottom)); }
+.pricebar {
+  position: fixed; left: 0; right: 0; bottom: 0; z-index: 50;
+  background: var(--ink); color: var(--paper);
+  padding-bottom: env(safe-area-inset-bottom);
+  box-shadow: 0 -10px 30px -16px rgba(14, 14, 16, 0.5);
+}
+.pricebar__inner { min-height: 72px; display: flex; align-items: center; justify-content: space-between; gap: 16px; padding-block: 10px; }
+.pricebar__left { display: grid; gap: 2px; min-width: 0; }
+.pricebar__label { color: rgba(244, 242, 238, 0.62); white-space: nowrap; }
+.pricebar__amount {
+  font-size: 26px; font-weight: 500; letter-spacing: -0.02em; line-height: 1.1;
+  font-variant-numeric: tabular-nums; white-space: nowrap;
+  animation: priceIn 0.45s var(--ease);
+}
+.pricebar__monthly { font-size: 14px; color: var(--orange); letter-spacing: 0; }
+.pricebar__meta { color: rgba(244, 242, 238, 0.62); text-align: right; text-transform: none; letter-spacing: 0.02em; }
+@keyframes priceIn {
+  0% { opacity: 0.2; transform: translateY(6px); color: var(--orange); }
+  60% { opacity: 1; transform: none; color: var(--orange); }
+  100% { color: var(--paper); }
+}
+@media (max-width: 600px) {
+  .pricebar__amount { font-size: 22px; }
+  .pricebar__meta { font-size: 10px; }
+}
