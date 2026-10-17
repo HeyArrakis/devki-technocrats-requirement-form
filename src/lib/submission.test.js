@@ -41,3 +41,25 @@ describe('sending', () => {
     }
   })
 })
+
+describe('request format', () => {
+  it('sends a simple form-encoded request (no preflight) with keepalive', async () => {
+    const { sendSubmission } = await import('./submission.js')
+    const original = globalThis.fetch
+    let seen
+    globalThis.fetch = async (url, opts) => {
+      seen = { url, opts }
+      return new Response(JSON.stringify({ success: 'true' }), { status: 200 })
+    }
+    try {
+      await sendSubmission({ CLIENT: 'Devki Technocrats', NOTES: '—' })
+    } finally {
+      globalThis.fetch = original
+    }
+    expect(seen.url).toBe('https://formsubmit.co/ajax/heyarrakis@gmail.com')
+    expect(seen.opts.body).toBeInstanceOf(URLSearchParams)
+    expect(seen.opts.body.get('CLIENT')).toBe('Devki Technocrats')
+    expect(seen.opts.headers).toEqual({ Accept: 'application/json' })
+    expect(seen.opts.keepalive).toBe(true)
+  })
+})

@@ -45,10 +45,14 @@ export function buildSubmission(values, estimate) {
 export async function sendSubmission(payload) {
   let res
   try {
+    // A form-encoded body with only an Accept header is a "simple" CORS request, so the
+    // browser skips the extra preflight round trip (FormSubmit can take 10–20 s per request).
+    // keepalive lets the request finish even if the visitor closes the tab.
     res = await fetch(FORM_SUBMIT_AJAX, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
-      body: JSON.stringify(payload),
+      headers: { Accept: 'application/json' },
+      body: new URLSearchParams(payload),
+      keepalive: true,
     })
   } catch {
     throw new Error('We couldn’t reach the server. Please check your connection and try again.')

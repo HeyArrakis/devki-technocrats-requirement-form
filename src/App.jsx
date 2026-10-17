@@ -11,7 +11,8 @@ const SHOW_PRICES = pricesConfigured()
 export default function App() {
   const [selection, setSelection] = useState({})
   const [notes, setNotes] = useState('')
-  const [status, setStatus] = useState('idle') // idle | sending | success | error
+  const [status, setStatus] = useState('idle') // idle | success
+  const [delivery, setDelivery] = useState('idle') // idle | sending | sent | failed
   const [submitError, setSubmitError] = useState('')
   const [sent, setSent] = useState(null)
 
@@ -22,26 +23,35 @@ export default function App() {
     setSubmitError('')
   }
 
-  const onSubmit = async (e) => {
+  // Sending runs in the background: the thank-you page shows instantly and reports
+  // delivery (with a retry) once FormSubmit answers.
+  const deliver = (payload) => {
+    setDelivery('sending')
+    sendSubmission(payload)
+      .then(() => setDelivery('sent'))
+      .catch((err) => {
+        setDelivery('failed')
+        setSubmitError(err.message)
+      })
+  }
+
+  const onSubmit = (e) => {
     e.preventDefault()
-    if (status === 'sending') return
+    if (status === 'success') return
     if (estimate.lines.length === 0 && !notes.trim()) {
       setSubmitError('Please tick at least one service (or add a note) before submitting.')
       return
     }
-    setStatus('sending')
+    const payload = buildSubmission({ notes }, estimate)
     setSubmitError('')
-    try {
-      await sendSubmission(buildSubmission({ notes }, estimate))
-      setSent(estimate)
-      setStatus('success')
-    } catch (err) {
-      setStatus('error')
-      setSubmitError(err.message)
-    }
+    setSent({ estimate, payload })
+    setStatus('success')
+    deliver(payload)
   }
 
-  if (status === 'success' && sent) return <Success estimate={sent} />
+  if (status === 'success' && sent) {
+    return <Success estimate={sent.estimate} delivery={delivery} error={submitError} onRetry={() => deliver(sent.payload)} />
+  }
 
   const count = estimate.lines.length
 
@@ -95,8 +105,8 @@ export default function App() {
               </p>
             )}
             <div className="submit__row">
-              <button type="submit" className="btn btn--primary" disabled={status === 'sending'} aria-busy={status === 'sending'}>
-                {status === 'sending' ? <><span className="spinner" aria-hidden="true" /> Sending…</> : <>Submit checklist <span aria-hidden="true">→</span></>}
+              <button type="submit" className="btn btn--primary">
+                Submit checklist <span aria-hidden="true">→</span>
               </button>
               <span className="mono muted">{count} {count === 1 ? 'service' : 'services'} ticked</span>
             </div>
@@ -159,7 +169,7 @@ function Footer() {
   )
 }
 
-function Success({ estimate }) {
+function Success({ estimate, delivery, error, onRetry }) {
   const titleRef = useRef(null)
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'instant' })
@@ -179,6 +189,18 @@ function Success({ estimate }) {
             ))}
           </ul>
         )}
+        <div className="delivery" aria-live="polite">
+          {delivery === 'sending' && (
+            <p className="delivery__status mono"><span className="spinner spinner--dark" aria-hidden="true" /> Sending to Sonder…</p>
+          )}
+          {delivery === 'sent' && <p className="delivery__status delivery__status--ok mono"><CheckMark /> Delivered to Sonder</p>}
+          {delivery === 'failed' && (
+            <div className="delivery__failed">
+              <p className="form-error">{error}</p>
+              <button type="button" className="btn btn--primary" onClick={onRetry}>Try again</button>
+            </div>
+          )}
+        </div>
       </main>
       <Footer />
     </>

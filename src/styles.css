@@ -232,3 +232,11 @@ body:has(.pricebar) { padding-bottom: calc(84px + env(safe-area-inset-bottom)); 
   .pricebar__label { font-size: 11px; }
   .pricebar__core { display: none; }
 }
+
+/* Background delivery status on the thank-you page */
+.delivery { margin-top: 36px; }
+.delivery__status { display: inline-flex; align-items: center; gap: 10px; color: var(--muted); text-transform: none; letter-spacing: 0.02em; }
+.delivery__status--ok { color: var(--orange-ink); }
+.delivery__status .checkmark { width: 16px; height: 16px; }
+.delivery__failed { display: grid; gap: 14px; justify-items: start; max-width: 640px; }
+.spinner--dark { border-color: rgba(14, 14, 16, 0.2); border-top-color: var(--ink); }
