@@ -14,10 +14,10 @@ const hasAmount = (p) => p != null && p.amount != null
 /** True once at least one price has been filled in — otherwise no prices or totals are shown. */
 export const pricesConfigured = (pricing = PRICING) => Object.values(pricing).some(hasAmount)
 
-/** "₹25,000", "From ₹25,000", "₹15,000 / month" — or '' when no price is set. */
+/** "₹4,000", "From ₹4,000", "₹1,000 / month", or the entry's text label (e.g. "Quoted separately"). */
 export function priceLabel(groupId, pricing = PRICING) {
   const p = pricing[groupId]
-  if (!hasAmount(p)) return ''
+  if (!hasAmount(p)) return p?.label ?? ''
   const base = `${p.type === 'from' ? 'From ' : ''}${formatPrice(p.amount)}`
   return p.billing === 'monthly' ? `${base} / month` : base
 }
@@ -40,6 +40,7 @@ export function calculateEstimate(selection, { pricing = PRICING, groups = ALL_G
       name: group.name,
       items: group.items ? itemsOf(group).filter((i) => chosen.includes(i.id)).map((i) => i.label) : [],
       amount: hasAmount(p) ? p.amount : null,
+      label: p?.label ?? '',
       type: p?.type ?? 'fixed',
       billing: p?.billing ?? 'one-time',
     })

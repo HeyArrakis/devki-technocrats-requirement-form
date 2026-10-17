@@ -9,7 +9,9 @@ export const isEmailConfigured = () => !/example\.com$/i.test(FORM_SUBMIT_EMAIL)
 const orDash = (v) => (typeof v === 'string' && v.trim() ? v.trim() : '—')
 
 const priceText = (l) =>
-  l.amount == null ? '' : ` — ${l.type === 'from' ? 'From ' : ''}${formatPrice(l.amount)}${l.billing === 'monthly' ? ' / month' : ''}`
+  l.amount == null
+    ? l.label ? ` — ${l.label}` : ''
+    : ` — ${l.type === 'from' ? 'From ' : ''}${formatPrice(l.amount)}${l.billing === 'monthly' ? ' / month' : ''}`
 
 /**
  * Builds the email payload. Keys are inserted in reading order:
@@ -33,7 +35,9 @@ export function buildSubmission(values, estimate) {
   }
 
   if (pricesConfigured()) {
-    p['ESTIMATED INVESTMENT'] = `${estimate.hasFromPrices ? 'From ' : ''}${formatPrice(estimate.oneTimeTotal)}`
+    p['ESTIMATED INVESTMENT'] = `${estimate.hasFromPrices ? 'From ' : ''}${formatPrice(estimate.oneTimeTotal)}${
+      estimate.showCore ? ` (incl. complete website revamp ${formatPrice(estimate.coreAmount)})` : ''
+    }`
     if (estimate.monthlyTotal > 0) p['ESTIMATED INVESTMENT — Monthly'] = `${formatPrice(estimate.monthlyTotal)} / month`
   }
 

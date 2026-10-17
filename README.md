@@ -56,38 +56,40 @@ in the page source.
 
 ```js
 export const PRICING = {
-  coreWebsite: { amount: null, type: 'fixed', billing: 'one-time' },
-  branding:    { amount: null, type: 'fixed', billing: 'one-time' },
-  ...
+  coreWebsite: { amount: 20000 },
+  branding: { amount: 2000 },
+  uiux: { amount: 3000 },
+  contentImageUpgrade: { amount: null, label: 'Free with your content', rates: [...] },
+  businessShowcase: { amount: 4000 },
+  customFeature: { amount: null, label: 'Quoted separately' },
+  aiSmartFeatures: { amount: 5000 },
+  localSEO: { amount: 1000 },
+  advancedSEO: { amount: null, label: 'Priced on your goals' },
+  maintenance: { amount: null, label: 'Free for 6 months' },
 }
 ```
 
-All amounts are currently `null`, so the page shows **no prices and no total**. Fill in an
-amount (e.g. `25000`) and that price appears next to the service; the estimated total appears
-as soon as any price is set.
+| Field    | Meaning |
+|----------|---------|
+| `amount` | Price in rupees, counted in the estimate when ticked. `null` = not counted. |
+| `label`  | Text shown instead of a price when `amount` is `null` |
+| `type`   | Optional `'from'` to show "From ₹4,000" |
+| `rates`  | Optional per-unit rates listed under the service (used for content & images) |
 
-| Field     | Meaning |
-|-----------|---------|
-| `amount`  | Price in rupees, or `null` for no price |
-| `type`    | `'fixed'` → “₹25,000”, `'from'` → “From ₹25,000” |
-| `billing` | `'one-time'` counts toward the project estimate; `'monthly'` is shown separately as ongoing |
-
-Prices are never hard-coded in the UI; every label and total reads from `PRICING`.
+The estimate = complete website revamp + each ticked priced group (once per group).
 
 ### 3. Pricing logic (group-based)
 
-Pricing is per **service group**, not per checkbox (`src/lib/pricing.js`). A group is
-charged once as soon as at least one of its options is ticked:
+A group is charged once as soon as at least one of its options is ticked:
 
-| Group | Options shown | Charged |
-|-------|---------------|---------|
-| Logo & Brand Identity | Logo design / redesign, Brand identity (+ brand guidelines included) | once |
-| Services & Capabilities Showcase | Services, Capabilities, Machinery, Facilities, Capacity, Industries served | once |
-| Projects & Portfolio | Project showcase, Portfolio gallery, Case studies | once |
-| AI & Smart Features | AI Website Assistant, AI Enquiry / RFQ Assistant, Automated Email Response, AI Quotation Assistant | once |
-| Every other service | single option | once |
+| Group | Options | Price |
+|-------|---------|-------|
+| Logo & Brand Identity | Logo design / redesign, Brand identity (+ brand guidelines included) | ₹2,000 |
+| Website UI/UX Design | (+ visual content design included, first iteration only) | ₹3,000 |
+| Business Showcase | Services & capabilities, Projects & portfolio, Quality & certifications, Company profile PDF | ₹4,000 |
+| AI & Smart Features | AI Website Assistant, AI Enquiry / RFQ Assistant, Automated Email Response, AI Quotation Assistant | ₹5,000 |
 
-`src/lib/pricing.test.js` covers this (e.g. one vs. all four AI features → same price).
+`src/lib/pricing.test.js` and `src/lib/submission.test.js` cover this.
 
 ### 4. Services & copy
 

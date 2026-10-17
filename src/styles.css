@@ -73,6 +73,8 @@ button, input, textarea { font: inherit; color: inherit; }
   outline: none;
 }
 .intro__copy { margin-top: 12px; font-size: 18px; color: var(--muted); }
+.intro__core { display: flex; justify-content: space-between; gap: 12px; margin-bottom: 6px; font-size: 16px; font-weight: 500; color: var(--ink); }
+.intro__core .mono { font-size: 14px; text-transform: none; letter-spacing: 0; }
 .intro__note {
   margin-top: 20px; padding: 14px 16px;
   border-left: 3px solid var(--orange); background: var(--surface);
@@ -102,6 +104,11 @@ button, input, textarea { font: inherit; color: inherit; }
 .row__title { font-size: 17px; font-weight: 500; line-height: 1.35; }
 .row__item { font-size: 16px; font-weight: 500; line-height: 1.35; }
 .row__desc { margin-top: 2px; font-size: 14px; color: var(--muted); }
+.row__extras { display: grid; gap: 4px; margin-top: 8px; }
+.row__rates { font-size: 13px; font-weight: 500; color: var(--ink); }
+.row__note { font-size: 13px; color: var(--muted); padding-left: 12px; position: relative; }
+.row__note::before { content: ''; position: absolute; left: 0; top: 0.6em; width: 4px; height: 4px; background: var(--orange); }
+.row__bonus { margin-top: 6px; color: var(--orange-ink); text-transform: none; letter-spacing: 0.02em; }
 .row__price {
   flex: none; padding-top: 3px; font-size: 13px; font-weight: 500;
   text-transform: none; letter-spacing: 0; white-space: nowrap;

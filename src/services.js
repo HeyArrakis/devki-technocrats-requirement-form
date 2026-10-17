@@ -6,14 +6,13 @@
 
 /** One line telling the client what they don't need to tick. */
 export const INCLUDED_NOTE =
-  'Already included in every website: all essential pages, a mobile-friendly design, enquiry & quotation forms, call / email / WhatsApp buttons, testimonials, basic SEO, testing, launch and 6 months of support.'
+  'Already included in every website: all essential pages, a mobile-friendly design, enquiry & quotation forms, call / email / WhatsApp buttons, testimonials, basic SEO, testing, launch and 6 months of maintenance & technical support.'
 
 export const SECTIONS = [
   {
     id: 'brand',
     letter: 'A',
-    title: 'Branding & Visual Identity',
-    intro: 'How your company looks — before anyone reads a word.',
+    title: 'Branding & Design',
     groups: [
       {
         id: 'branding',
@@ -30,11 +29,7 @@ export const SECTIONS = [
         id: 'uiux',
         name: 'Website UI/UX Design',
         description: 'Design a modern, premium and professional visual experience for your new website.',
-      },
-      {
-        id: 'visualContent',
-        name: 'Visual Content Design',
-        description: 'Create or improve website banners, graphics and supporting visual assets.',
+        bonus: 'Visual content design (banners & graphics) included — first iteration only',
       },
     ],
   },
@@ -42,51 +37,28 @@ export const SECTIONS = [
     id: 'showcase',
     letter: 'B',
     title: 'Website & Business Showcase',
-    intro: 'Show prospective clients exactly what you can do — and prove it.',
     groups: [
       {
         id: 'contentImageUpgrade',
         name: 'Content & Image Upgrade',
         description: 'Improve, restructure or enhance the content and imagery used across the website.',
+        // Rates are listed under the description from PRICING.contentImageUpgrade.rates
       },
       {
-        id: 'capabilitiesShowcase',
-        name: 'Services & Capabilities Showcase',
-        description: 'Professionally present your services, capabilities, facilities and industrial strengths.',
+        id: 'businessShowcase',
+        name: 'Business Showcase',
+        description: 'Professionally present what you do, what you’ve delivered and why clients can trust you.',
         items: [
-          { id: 'services', label: 'Services' },
-          { id: 'capabilities', label: 'Capabilities' },
-          { id: 'machinery', label: 'Machinery' },
-          { id: 'facilities', label: 'Facilities' },
-          { id: 'capacity', label: 'Capacity' },
-          { id: 'industriesServed', label: 'Industries served' },
+          { id: 'capabilitiesShowcase', label: 'Services & capabilities', hint: 'Machinery, facilities, capacity and industries served.' },
+          { id: 'projectsPortfolio', label: 'Projects & portfolio', hint: 'Completed work and case studies.' },
+          { id: 'qualityCertification', label: 'Quality & certifications', hint: 'Standards, certifications and processes.' },
+          { id: 'companyProfilePdf', label: 'Company profile PDF', hint: 'A designed, downloadable profile to share with clients.' },
         ],
-      },
-      {
-        id: 'projectsPortfolio',
-        name: 'Projects & Portfolio',
-        description: 'Create a professional showcase for previous projects and completed work.',
-        items: [
-          { id: 'projectShowcase', label: 'Project showcase' },
-          { id: 'portfolio', label: 'Portfolio gallery' },
-          { id: 'caseStudies', label: 'Case studies' },
-        ],
-      },
-      {
-        id: 'qualityCertification',
-        name: 'Quality & Certifications',
-        description: 'Present quality standards, certifications, processes and trust factors professionally.',
-      },
-      {
-        id: 'companyProfilePdf',
-        name: 'Company Profile PDF',
-        description:
-          'Create a professionally designed downloadable company/capability profile that can also be shared directly with prospective clients.',
       },
       {
         id: 'customFeature',
         name: 'Custom Website Feature',
-        description: 'Any additional website functionality or special requirement not covered above.',
+        description: 'Any additional website functionality or special requirement not covered above — describe it in the notes below.',
       },
     ],
   },
@@ -94,7 +66,6 @@ export const SECTIONS = [
     id: 'ai',
     letter: 'C',
     title: 'AI & Smart Features',
-    intro: 'Help visitors get answers faster — and help your team respond faster.',
     groups: [
       {
         id: 'aiSmartFeatures',
@@ -113,8 +84,7 @@ export const SECTIONS = [
   {
     id: 'growth',
     letter: 'D',
-    title: 'Advanced Online Growth',
-    intro: 'Basic search visibility is already included. These go further.',
+    title: 'Online Growth',
     groups: [
       {
         id: 'localSEO',
@@ -125,26 +95,23 @@ export const SECTIONS = [
         id: 'advancedSEO',
         name: 'Advanced SEO',
         description:
-          'A more comprehensive SEO strategy designed to improve long-term organic visibility and search growth.',
+          'Only needed if you want to grow through organic search traffic and viewership. A separate, longer-term service, priced based on your goals.',
       },
     ],
   },
   {
-    id: 'ongoing',
+    id: 'support',
     letter: 'E',
-    title: 'Ongoing Services',
-    intro: 'Website maintenance and support are already included for 6 months after launch.',
+    title: 'After Launch',
     groups: [
       {
-        id: 'ongoingSEO',
-        name: 'Ongoing SEO',
-        description: 'Continue improving search visibility and organic growth after the initial website launch.',
-      },
-      {
-        id: 'contentUpdates',
-        name: 'Content Updates After 6 Months',
-        description:
-          'Continued updates to website content, images, services, projects and other website information after the included support period.',
+        id: 'maintenance',
+        name: 'Maintenance & Technical Support',
+        description: 'Free for the first 6 months after launch.',
+        notes: [
+          'Content updates after 6 months are charged separately, based on the scope of work.',
+          'During the 6 months, any additions, deletions or changes beyond maintenance and technical checks are charged separately, based on the work.',
+        ],
       },
     ],
   },

@@ -33,37 +33,42 @@ export const CURRENCY = {
  *
  * Ticking one, several or all options inside a group adds the group's amount once.
  *
- *   amount  — rupees, e.g. 25000. Leave as null to show no price for that service.
- *   type    — 'fixed' shows "₹25,000"; 'from' shows "From ₹25,000"
- *   billing — 'one-time' counts toward the estimate; 'monthly' is shown as "/ month"
- *
- * While every amount is null, the page shows no prices and no total at all.
+ *   amount — rupees, e.g. 4000. Counted in the estimate when ticked.
+ *            null = not counted; shows `label` instead (e.g. "Quoted separately").
+ *   type   — optional: 'from' shows "From ₹4,000" (default: fixed price)
+ *   label  — text shown when there is no amount
+ *   rates  — optional per-unit rates listed under the service
  */
 export const PRICING = {
   // The complete website revamp (always included, not a checkbox)
-  coreWebsite: { amount: null, type: 'fixed', billing: 'one-time' },
+  coreWebsite: { amount: 20000 },
 
-  // Branding & visual identity
-  branding: { amount: null, type: 'fixed', billing: 'one-time' },
-  uiux: { amount: null, type: 'fixed', billing: 'one-time' },
-  visualContent: { amount: null, type: 'fixed', billing: 'one-time' },
+  // A — Branding & design
+  branding: { amount: 2000 },
+  uiux: { amount: 3000 }, // visual content design included, first iteration only
 
-  // Website & business showcase
-  contentImageUpgrade: { amount: null, type: 'fixed', billing: 'one-time' },
-  capabilitiesShowcase: { amount: null, type: 'fixed', billing: 'one-time' },
-  projectsPortfolio: { amount: null, type: 'fixed', billing: 'one-time' },
-  qualityCertification: { amount: null, type: 'fixed', billing: 'one-time' },
-  companyProfilePdf: { amount: null, type: 'fixed', billing: 'one-time' },
-  customFeature: { amount: null, type: 'fixed', billing: 'one-time' },
+  // B — Website & business showcase
+  contentImageUpgrade: {
+    amount: null,
+    label: 'Free with your content',
+    rates: [
+      { amount: 150, unit: 'per image (high-end 4K)' },
+      { amount: 200, unit: 'per content section' },
+      { amount: 500, unit: 'per blog (image included)' },
+    ],
+  },
+  // One price for any or all of: services & capabilities, projects & portfolio,
+  // quality & certifications, company profile PDF
+  businessShowcase: { amount: 4000 },
+  customFeature: { amount: null, label: 'Quoted separately' },
 
-  // AI & smart features (ONE price for all four features)
-  aiSmartFeatures: { amount: null, type: 'fixed', billing: 'one-time' },
+  // C — AI & smart features (one price for all four features)
+  aiSmartFeatures: { amount: 5000 },
 
-  // Advanced online growth
-  localSEO: { amount: null, type: 'fixed', billing: 'one-time' },
-  advancedSEO: { amount: null, type: 'fixed', billing: 'one-time' },
+  // D — Online growth
+  localSEO: { amount: 1000 },
+  advancedSEO: { amount: null, label: 'Priced on your goals' },
 
-  // Ongoing services (after launch)
-  ongoingSEO: { amount: null, type: 'fixed', billing: 'monthly' },
-  contentUpdates: { amount: null, type: 'fixed', billing: 'monthly' },
+  // E — After launch
+  maintenance: { amount: null, label: 'Free for 6 months' },
 }

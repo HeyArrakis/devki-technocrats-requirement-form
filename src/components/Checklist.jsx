@@ -1,5 +1,25 @@
-import { priceLabel } from '../lib/pricing.js'
+import { PRICING } from '../config.js'
+import { formatPrice, priceLabel } from '../lib/pricing.js'
 import { Box } from './ui.jsx'
+
+/** Extra lines under a service: per-unit rates from PRICING, then any notes. */
+function Extras({ group }) {
+  const rates = PRICING[group.id]?.rates ?? []
+  const notes = group.notes ?? []
+  if (!rates.length && !notes.length) return null
+  return (
+    <span className="row__extras">
+      {rates.length > 0 && (
+        <span className="row__rates">
+          If we create them: {rates.map((r) => `${formatPrice(r.amount)} ${r.unit}`).join(' · ')}
+        </span>
+      )}
+      {notes.map((n) => (
+        <span key={n} className="row__note">{n}</span>
+      ))}
+    </span>
+  )
+}
 
 function Price({ groupId }) {
   const label = priceLabel(groupId)
@@ -30,6 +50,8 @@ export default function ChecklistGroup({ group, chosen, onToggle }) {
           <span className="row__text">
             <span className="row__title">{group.name}</span>
             <span className="row__desc">{group.description}</span>
+            <Extras group={group} />
+            {group.bonus && <span className="row__bonus mono">+ {group.bonus}</span>}
           </span>
           <Price groupId={group.id} />
         </Check>

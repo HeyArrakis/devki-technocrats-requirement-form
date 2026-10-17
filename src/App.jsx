@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { CLIENT } from './config.js'
 import { INCLUDED_NOTE, SECTIONS } from './services.js'
-import { calculateEstimate, formatPrice, pricesConfigured } from './lib/pricing.js'
+import { calculateEstimate, formatPrice, priceLabel, pricesConfigured } from './lib/pricing.js'
 import { validateAll, validateField } from './lib/validation.js'
 import { FORM_SUBMIT_ACTION, buildSubmission, sendSubmission } from './lib/submission.js'
 import ChecklistGroup from './components/Checklist.jsx'
@@ -69,7 +69,15 @@ export default function App() {
           <p className="mono muted">{CLIENT.name} × Sonder</p>
           <h1 className="intro__title">Website requirement checklist</h1>
           <p className="intro__copy">Tick everything you’d like included in your new website.</p>
-          <p className="intro__note">{INCLUDED_NOTE}</p>
+          <div className="intro__note">
+            {priceLabel('coreWebsite') && (
+              <p className="intro__core">
+                <span>Complete website revamp</span>
+                <span className="mono">{priceLabel('coreWebsite')}</span>
+              </p>
+            )}
+            <p>{INCLUDED_NOTE}</p>
+          </div>
         </div>
 
         <form action={FORM_SUBMIT_ACTION} method="POST" noValidate onSubmit={onSubmit} aria-label="Website requirement checklist">
@@ -120,6 +128,9 @@ export default function App() {
                   {estimate.hasFromPrices ? 'From ' : ''}{formatPrice(estimate.oneTimeTotal)}
                   {estimate.monthlyTotal > 0 && <span className="submit__monthly"> + {formatPrice(estimate.monthlyTotal)} / month</span>}
                 </span>
+                {estimate.showCore && (
+                  <p className="submit__note">Includes the complete website revamp ({formatPrice(estimate.coreAmount)}) plus the services you ticked.</p>
+                )}
                 <p className="submit__note">
                   This is an initial estimate based on your selected requirements. Final pricing will be confirmed after
                   reviewing your requirements.
