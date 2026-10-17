@@ -58,3 +58,14 @@ describe('group-based pricing', () => {
     expect(priceLabel('ongoingSEO', pricing)).toBe('From ₹9,000 / month')
   })
 })
+
+describe('unpriced services', () => {
+  const empty = { coreWebsite: { amount: null }, branding: { amount: null, type: 'fixed', billing: 'one-time' } }
+  it('shows no label and adds nothing when amount is null', () => {
+    expect(priceLabel('branding', empty)).toBe('')
+    const e = calculateEstimate({ branding: ['logo'] }, { pricing: empty, groups })
+    expect(e.oneTimeTotal).toBe(0)
+    expect(e.lines).toHaveLength(1)
+    expect(e.showCore).toBe(false)
+  })
+})

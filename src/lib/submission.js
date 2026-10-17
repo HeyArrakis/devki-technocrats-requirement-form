@@ -1,5 +1,5 @@
 import { CLIENT, FORM_SUBMIT_EMAIL } from '../config.js'
-import { formatPrice } from './pricing.js'
+import { formatPrice, pricesConfigured } from './pricing.js'
 
 export const FORM_SUBMIT_ACTION = `https://formsubmit.co/${FORM_SUBMIT_EMAIL}`
 const FORM_SUBMIT_AJAX = `https://formsubmit.co/ajax/${FORM_SUBMIT_EMAIL}`
@@ -8,60 +8,37 @@ export const isEmailConfigured = () => !/example\.com$/i.test(FORM_SUBMIT_EMAIL)
 
 const orDash = (v) => (typeof v === 'string' && v.trim() ? v.trim() : '—')
 
+const priceText = (l) =>
+  l.amount == null ? '' : ` — ${l.type === 'from' ? 'From ' : ''}${formatPrice(l.amount)}${l.billing === 'monthly' ? ' / month' : ''}`
+
 /**
- * Builds the email payload. Keys are human-readable and prefixed with their
- * section, and inserted in reading order so the email reads top to bottom:
- * CLIENT DETAILS → BUSINESS REQUIREMENTS → SELECTED SERVICES → ESTIMATED INVESTMENT → ADDITIONAL NOTES
+ * Builds the email payload. Keys are inserted in reading order:
+ * CLIENT DETAILS → SELECTED SERVICES → ESTIMATED INVESTMENT (only if prices are set) → NOTES
  */
-export function buildSubmission(values, estimate, aiPrefs) {
+export function buildSubmission(values, estimate) {
   const p = {
-    _subject: `Website requirements — ${orDash(values.companyName)} (${formatPrice(estimate.oneTimeTotal)} est.)`,
+    _subject: `Website checklist — ${CLIENT.name} (${estimate.lines.length} services ticked)`,
     _template: 'box',
     _captcha: 'false',
-    _replyto: values.email.trim(),
 
-    'CLIENT DETAILS — Full name': orDash(values.fullName),
-    'CLIENT DETAILS — Company': orDash(values.companyName),
-    'CLIENT DETAILS — Email': orDash(values.email),
-    'CLIENT DETAILS — Phone / WhatsApp': orDash(values.phone),
-    'CLIENT DETAILS — Current website': orDash(values.currentWebsite),
-
-    'BUSINESS REQUIREMENTS — Main goal of the new website': orDash(values.mainGoal),
-    'BUSINESS REQUIREMENTS — Main customers': orDash(values.mainCustomers),
-    'BUSINESS REQUIREMENTS — Services to highlight most': orDash(values.highlightServices),
-    'BUSINESS REQUIREMENTS — New / better images available': orDash(values.imagesAvailable),
-    'BUSINESS REQUIREMENTS — Reference websites': orDash(values.referenceWebsites),
+    'CLIENT — Name': orDash(values.fullName),
+    'CLIENT — Phone / WhatsApp': orDash(values.phone),
+    'CLIENT — Company': CLIENT.name,
   }
 
-  if (estimate.showCore) {
-    p['SELECTED SERVICES — Complete Website Revamp (included)'] = formatPrice(estimate.coreAmount)
-  }
-  if (estimate.lines.length === 0) {
-    p['SELECTED SERVICES — Additional services'] = 'None selected (core website only)'
-  }
+  if (estimate.lines.length === 0) p['SELECTED SERVICES'] = 'Nothing ticked (core website only)'
   for (const line of estimate.lines) {
-    const price = `${line.type === 'from' ? 'From ' : ''}${formatPrice(line.amount)}${line.billing === 'monthly' ? ' / month' : ''}`
-    const detail = line.items.length ? ` — includes: ${line.items.join(', ')}` : ''
-    p[`SELECTED SERVICES — ${line.name}`] = `${price}${detail}`
-    if (line.groupId === 'branding') p[`SELECTED SERVICES — ${line.name}`] += ' (+ brand guidelines)'
-    if (line.groupId === 'customFeature') p['SELECTED SERVICES — Custom feature description'] = orDash(values.customDetails)
-    if (line.groupId === 'aiSmartFeatures') {
-      p['SELECTED SERVICES — AI: where enquiries should reach'] = aiPrefs.channel || '—'
-      p['SELECTED SERVICES — AI: customer languages'] = aiPrefs.languages.length ? aiPrefs.languages.join(', ') : '—'
-      p['SELECTED SERVICES — AI: notes'] = orDash(aiPrefs.notes)
-    }
-  }
-  p['SELECTED SERVICES — Pricing groups selected'] = String(estimate.lines.length)
-
-  p['ESTIMATED INVESTMENT — One-time project estimate'] =
-    `${estimate.hasFromPrices ? 'From ' : ''}${formatPrice(estimate.oneTimeTotal)}`
-  if (estimate.monthlyTotal > 0) {
-    p['ESTIMATED INVESTMENT — Ongoing (monthly)'] = `From ${formatPrice(estimate.monthlyTotal)} / month`
+    const detail = line.items.length ? `Yes — ${line.items.join(', ')}` : 'Yes'
+    p[`SELECTED — ${line.name}`] = `${detail}${priceText(line)}`
   }
 
-  p['ADDITIONAL NOTES — Anything else'] = orDash(values.additionalNotes)
-  p['ADDITIONAL NOTES — Form'] = `${CLIENT.name} website requirement form`
-  p['ADDITIONAL NOTES — Submitted at'] = new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' }) + ' IST'
+  if (pricesConfigured()) {
+    p['ESTIMATED INVESTMENT'] = `${estimate.hasFromPrices ? 'From ' : ''}${formatPrice(estimate.oneTimeTotal)}`
+    if (estimate.monthlyTotal > 0) p['ESTIMATED INVESTMENT — Monthly'] = `${formatPrice(estimate.monthlyTotal)} / month`
+  }
+
+  p['NOTES'] = orDash(values.notes)
+  p['Submitted at'] = new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' }) + ' IST'
   return p
 }
 

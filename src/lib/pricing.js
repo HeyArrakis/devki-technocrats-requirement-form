@@ -9,10 +9,15 @@ const formatter = new Intl.NumberFormat(CURRENCY.locale, {
 
 export const formatPrice = (amount) => formatter.format(Math.round(amount || 0))
 
-/** "₹25,000", "From ₹25,000", with "/ month" for ongoing services. */
+const hasAmount = (p) => p != null && p.amount != null
+
+/** True once at least one price has been filled in — otherwise no prices or totals are shown. */
+export const pricesConfigured = (pricing = PRICING) => Object.values(pricing).some(hasAmount)
+
+/** "₹25,000", "From ₹25,000", "₹15,000 / month" — or '' when no price is set. */
 export function priceLabel(groupId, pricing = PRICING) {
   const p = pricing[groupId]
-  if (!p || p.amount == null) return 'Included'
+  if (!hasAmount(p)) return ''
   const base = `${p.type === 'from' ? 'From ' : ''}${formatPrice(p.amount)}`
   return p.billing === 'monthly' ? `${base} / month` : base
 }
@@ -22,7 +27,7 @@ export function priceLabel(groupId, pricing = PRICING) {
  *
  * `selection` maps groupId → array of selected item ids. A group counts once
  * as soon as it has at least one selected item — selecting more items inside
- * the same group never adds to the price.
+ * the same group never adds to the price. Groups without a price add nothing.
  */
 export function calculateEstimate(selection, { pricing = PRICING, groups = ALL_GROUPS } = {}) {
   const lines = []
@@ -30,32 +35,30 @@ export function calculateEstimate(selection, { pricing = PRICING, groups = ALL_G
     const chosen = selection[group.id] ?? []
     if (chosen.length === 0) continue
     const p = pricing[group.id]
-    const valid = itemsOf(group).filter((i) => chosen.includes(i.id))
     lines.push({
       groupId: group.id,
       name: group.name,
-      items: group.items ? valid.map((i) => i.label) : [],
-      amount: p?.amount ?? 0,
+      items: group.items ? itemsOf(group).filter((i) => chosen.includes(i.id)).map((i) => i.label) : [],
+      amount: hasAmount(p) ? p.amount : null,
       type: p?.type ?? 'fixed',
       billing: p?.billing ?? 'one-time',
     })
   }
 
   const core = pricing.coreWebsite
-  const coreAmount = core?.amount ?? 0
-  const oneTimeLines = lines.filter((l) => l.billing !== 'monthly')
-  const monthlyLines = lines.filter((l) => l.billing === 'monthly')
+  const coreAmount = hasAmount(core) ? core.amount : 0
+  const priced = lines.filter((l) => l.amount != null)
   const sum = (ls) => ls.reduce((t, l) => t + l.amount, 0)
+  const oneTime = priced.filter((l) => l.billing !== 'monthly')
+  const monthly = priced.filter((l) => l.billing === 'monthly')
 
   return {
     lines,
-    oneTimeLines,
-    monthlyLines,
+    showCore: hasAmount(core),
     coreAmount,
-    showCore: core?.amount != null,
-    addOnsTotal: sum(oneTimeLines),
-    oneTimeTotal: coreAmount + sum(oneTimeLines),
-    monthlyTotal: sum(monthlyLines),
-    hasFromPrices: lines.some((l) => l.type === 'from') || core?.type === 'from',
+    addOnsTotal: sum(oneTime),
+    oneTimeTotal: coreAmount + sum(oneTime),
+    monthlyTotal: sum(monthly),
+    hasFromPrices: priced.some((l) => l.type === 'from') || (hasAmount(core) && core.type === 'from'),
   }
 }

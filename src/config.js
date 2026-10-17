@@ -31,42 +31,39 @@ export const CURRENCY = {
 /**
  * PRICING — one entry per SERVICE GROUP (not per checkbox).
  *
- * Selecting one, several or all items inside a group always adds the group's
- * amount exactly once.
+ * Ticking one, several or all options inside a group adds the group's amount once.
  *
- *   amount  — number in rupees
+ *   amount  — rupees, e.g. 25000. Leave as null to show no price for that service.
  *   type    — 'fixed' shows "₹25,000"; 'from' shows "From ₹25,000"
- *   billing — 'one-time' counts towards the project estimate;
- *             'monthly' is shown separately as an ongoing monthly amount
+ *   billing — 'one-time' counts toward the estimate; 'monthly' is shown as "/ month"
  *
- * ⚠️  These amounts are PLACEHOLDERS — confirm them before sharing the link.
+ * While every amount is null, the page shows no prices and no total at all.
  */
 export const PRICING = {
-  // Always included — the complete website revamp. Set `amount: null` to hide
-  // it from the estimate entirely (e.g. if quoted separately).
-  coreWebsite: { amount: 60000, type: 'fixed', billing: 'one-time' },
+  // The complete website revamp (always included, not a checkbox)
+  coreWebsite: { amount: null, type: 'fixed', billing: 'one-time' },
 
   // Branding & visual identity
-  branding: { amount: 25000, type: 'fixed', billing: 'one-time' },
-  uiux: { amount: 30000, type: 'fixed', billing: 'one-time' },
-  visualContent: { amount: 15000, type: 'from', billing: 'one-time' },
+  branding: { amount: null, type: 'fixed', billing: 'one-time' },
+  uiux: { amount: null, type: 'fixed', billing: 'one-time' },
+  visualContent: { amount: null, type: 'fixed', billing: 'one-time' },
 
   // Website & business showcase
-  contentImageUpgrade: { amount: 15000, type: 'from', billing: 'one-time' },
-  capabilitiesShowcase: { amount: 20000, type: 'fixed', billing: 'one-time' },
-  projectsPortfolio: { amount: 15000, type: 'fixed', billing: 'one-time' },
-  qualityCertification: { amount: 10000, type: 'fixed', billing: 'one-time' },
-  companyProfilePdf: { amount: 18000, type: 'fixed', billing: 'one-time' },
-  customFeature: { amount: 15000, type: 'from', billing: 'one-time' },
+  contentImageUpgrade: { amount: null, type: 'fixed', billing: 'one-time' },
+  capabilitiesShowcase: { amount: null, type: 'fixed', billing: 'one-time' },
+  projectsPortfolio: { amount: null, type: 'fixed', billing: 'one-time' },
+  qualityCertification: { amount: null, type: 'fixed', billing: 'one-time' },
+  companyProfilePdf: { amount: null, type: 'fixed', billing: 'one-time' },
+  customFeature: { amount: null, type: 'fixed', billing: 'one-time' },
 
   // AI & smart features (ONE price for all four features)
-  aiSmartFeatures: { amount: 45000, type: 'from', billing: 'one-time' },
+  aiSmartFeatures: { amount: null, type: 'fixed', billing: 'one-time' },
 
   // Advanced online growth
-  localSEO: { amount: 12000, type: 'fixed', billing: 'one-time' },
-  advancedSEO: { amount: 30000, type: 'from', billing: 'one-time' },
+  localSEO: { amount: null, type: 'fixed', billing: 'one-time' },
+  advancedSEO: { amount: null, type: 'fixed', billing: 'one-time' },
 
   // Ongoing services (after launch)
-  ongoingSEO: { amount: 15000, type: 'from', billing: 'monthly' },
-  contentUpdates: { amount: 6000, type: 'from', billing: 'monthly' },
+  ongoingSEO: { amount: null, type: 'fixed', billing: 'monthly' },
+  contentUpdates: { amount: null, type: 'fixed', billing: 'monthly' },
 }

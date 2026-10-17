@@ -1,32 +1,3 @@
-import { useReveal } from '../lib/hooks.js'
-
-export function Reveal({ as: Tag = 'div', className = '', delay = 0, children, ...rest }) {
-  const [ref, visible] = useReveal()
-  return (
-    <Tag
-      ref={ref}
-      className={`reveal ${visible ? 'is-visible' : ''} ${className}`}
-      style={delay ? { '--reveal-delay': `${delay}ms` } : undefined}
-      {...rest}
-    >
-      {children}
-    </Tag>
-  )
-}
-
-export function SectionHead({ number, eyebrow, title, intro, id }) {
-  return (
-    <Reveal className="section-head">
-      <div className="section-head__meta">
-        <span className="mono">{number}</span>
-        <span className="mono muted">{eyebrow}</span>
-      </div>
-      <h2 id={id} className="section-head__title">{title}</h2>
-      {intro && <p className="section-head__intro">{intro}</p>}
-    </Reveal>
-  )
-}
-
 export function CheckMark() {
   return (
     <svg viewBox="0 0 16 16" aria-hidden="true" className="checkmark">
@@ -35,7 +6,7 @@ export function CheckMark() {
   )
 }
 
-/** Visual checkbox: a real <input type="checkbox"> sits inside it, visually hidden. */
+/** Visual checkbox: a real <input type="checkbox"> sits next to it, visually hidden. */
 export function Box({ checked }) {
   return (
     <span className={`box ${checked ? 'is-checked' : ''}`} aria-hidden="true">

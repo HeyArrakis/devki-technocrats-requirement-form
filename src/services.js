@@ -4,17 +4,9 @@
    Groups with several `items` are still priced once (see lib/pricing.js).
    ========================================================================== */
 
-/** Everything already part of the complete website revamp — never selectable. */
-export const INCLUDED = [
-  { title: 'Complete new website', text: 'All the essential pages your business needs — home, about, services, contact and more.' },
-  { title: 'Looks great on every device', text: 'Designed to work beautifully on mobile, tablet and desktop.' },
-  { title: 'Enquiry & quotation forms', text: 'Simple forms so visitors can contact you or request a quote.' },
-  { title: 'Call, email & WhatsApp buttons', text: 'One-tap ways for prospective clients to reach you.' },
-  { title: 'Client testimonials', text: 'A section to show what your customers say about you.' },
-  { title: 'Basic search visibility', text: 'Set up so Google can find and understand your website.' },
-  { title: 'Testing & launch', text: 'Thoroughly checked, set up and launched for you.' },
-  { title: '6 months of support', text: 'Maintenance and help for six months after launch.' },
-]
+/** One line telling the client what they don't need to tick. */
+export const INCLUDED_NOTE =
+  'Already included in every website: all essential pages, a mobile-friendly design, enquiry & quotation forms, call / email / WhatsApp buttons, testimonials, basic SEO, testing, launch and 6 months of support.'
 
 export const SECTIONS = [
   {
@@ -95,7 +87,6 @@ export const SECTIONS = [
         id: 'customFeature',
         name: 'Custom Website Feature',
         description: 'Any additional website functionality or special requirement not covered above.',
-        detailsPrompt: 'Please describe what you need.',
       },
     ],
   },
@@ -116,7 +107,6 @@ export const SECTIONS = [
           { id: 'autoEmail', label: 'Automated Email Response', hint: 'Sends a professional reply as soon as an enquiry arrives.' },
           { id: 'aiQuotation', label: 'AI Quotation Assistant', hint: 'Helps prepare first-draft quotations from enquiries.' },
         ],
-        preferences: true,
       },
     ],
   },
@@ -164,11 +154,3 @@ export const ALL_GROUPS = SECTIONS.flatMap((s) => s.groups)
 
 /** Items for a group — single-option groups use the group itself as their one item. */
 export const itemsOf = (group) => group.items ?? [{ id: group.id, label: group.name }]
-
-/** AI feature preference options (shown once any AI feature is chosen). */
-export const AI_PREFERENCES = {
-  channels: ['Email', 'WhatsApp', 'Both'],
-  languages: ['English', 'Hindi', 'Gujarati', 'Other'],
-}
-
-export const IMAGE_OPTIONS = ['Yes', 'Some', 'No']

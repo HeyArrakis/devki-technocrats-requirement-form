@@ -1,15 +1,15 @@
 # Devki Technocrats × Sonder — Website Requirement Form
 
-A single-page, client-facing **website requirement & service selection form** prepared by
+A simple, single-page **website requirement checklist** prepared by
 [Sonder AI Agency](https://sonderai.agency/) for Devki Technocrats.
 
-The client ticks the services they want, sees a live **Estimated Investment**, answers a few
-business questions and submits. The completed form is emailed to Sonder via
+The client ticks the services they want, adds their name and phone number, and submits.
+Prices and an estimated total appear only once prices are filled in (see below). The completed form is emailed to Sonder via
 [FormSubmit](https://formsubmit.co) — there is no backend.
 
 - React 19 + Vite 8, plain CSS (Sonder light design tokens), no UI framework
-- Group-based pricing from one config object
-- Inline validation, accessible custom checkboxes, sticky estimate (desktop) / floating summary (mobile)
+- Optional group-based pricing from one config object (hidden until set)
+- Inline validation, accessible custom checkboxes, works on mobile
 - Deploys to GitHub Pages with the included GitHub Actions workflow
 
 ---
@@ -56,20 +56,21 @@ in the page source.
 
 ```js
 export const PRICING = {
-  coreWebsite: { amount: 60000, type: 'fixed', billing: 'one-time' },
-  branding:    { amount: 25000, type: 'fixed', billing: 'one-time' },
+  coreWebsite: { amount: null, type: 'fixed', billing: 'one-time' },
+  branding:    { amount: null, type: 'fixed', billing: 'one-time' },
   ...
-  ongoingSEO:  { amount: 15000, type: 'from',  billing: 'monthly' },
 }
 ```
 
+All amounts are currently `null`, so the page shows **no prices and no total**. Fill in an
+amount (e.g. `25000`) and that price appears next to the service; the estimated total appears
+as soon as any price is set.
+
 | Field     | Meaning |
 |-----------|---------|
-| `amount`  | Price in rupees. For `coreWebsite`, `null` hides it from the estimate. |
+| `amount`  | Price in rupees, or `null` for no price |
 | `type`    | `'fixed'` → “₹25,000”, `'from'` → “From ₹25,000” |
 | `billing` | `'one-time'` counts toward the project estimate; `'monthly'` is shown separately as ongoing |
-
-> ⚠️ The amounts currently in the file are **placeholders** — confirm them before sharing.
 
 Prices are never hard-coded in the UI; every label and total reads from `PRICING`.
 
@@ -80,7 +81,7 @@ charged once as soon as at least one of its options is ticked:
 
 | Group | Options shown | Charged |
 |-------|---------------|---------|
-| Logo & Brand Identity | Logo design / redesign, Brand identity (+ brand guidelines, automatic) | once |
+| Logo & Brand Identity | Logo design / redesign, Brand identity (+ brand guidelines included) | once |
 | Services & Capabilities Showcase | Services, Capabilities, Machinery, Facilities, Capacity, Industries served | once |
 | Projects & Portfolio | Project showcase, Portfolio gallery, Case studies | once |
 | AI & Smart Features | AI Website Assistant, AI Enquiry / RFQ Assistant, Automated Email Response, AI Quotation Assistant | once |
@@ -90,28 +91,20 @@ charged once as soon as at least one of its options is ticked:
 
 ### 4. Services & copy
 
-The service catalogue, the "already included" list and option labels are in
-`src/services.js`. Each group's `id` must match a key in `PRICING`.
+The checklist items and the "already included" line are in `src/services.js`. Each group's
+`id` must match a key in `PRICING`.
 
 ### 5. Client details
 
-`CLIENT` in `src/config.js` sets the client name (header, hero, email subject) and the
-pre-filled current website.
+`CLIENT` in `src/config.js` sets the client name shown on the page and in the email.
 
 ---
 
 ## The email Sonder receives
 
-FormSubmit's `box` template, with fields in this order:
-
-1. **CLIENT DETAILS** — name, company, email, phone/WhatsApp, current website
-2. **BUSINESS REQUIREMENTS** — main goal, customers, services to highlight, images, references
-3. **SELECTED SERVICES** — each selected group with its price and chosen options, custom
-   feature description, AI preferences, number of pricing groups
-4. **ESTIMATED INVESTMENT** — one-time estimate and any monthly amount
-5. **ADDITIONAL NOTES** — client notes and submission time (IST)
-
-The subject line includes the company and estimate; *Reply* goes straight to the client.
+FormSubmit's `box` template, in this order: **CLIENT** (name, phone/WhatsApp, company) →
+**SELECTED** services with the chosen options → **ESTIMATED INVESTMENT** (only once prices
+are set) → **NOTES**.
 
 ---
 
@@ -136,11 +129,11 @@ src/
   config.js            ← email, client, prices (edit here)
   services.js          ← service catalogue & copy
   App.jsx              ← page, state, validation, submit
-  components/          ← header/hero/sections, service cards, estimate, form primitives
+  components/          ← checklist rows and form primitives
   lib/pricing.js       ← group-based estimate (+ tests)
   lib/submission.js    ← FormSubmit payload & send (+ tests)
   lib/validation.js    ← inline validation rules
-  styles.css           ← Sonder light design system
+  styles.css           ← Sonder light styles
 ```
 
 No secrets, API keys or credentials are stored in this repository.
