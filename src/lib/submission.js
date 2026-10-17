@@ -4,8 +4,6 @@ import { formatPrice, pricesConfigured } from './pricing.js'
 export const FORM_SUBMIT_ACTION = `https://formsubmit.co/${FORM_SUBMIT_EMAIL}`
 const FORM_SUBMIT_AJAX = `https://formsubmit.co/ajax/${FORM_SUBMIT_EMAIL}`
 
-export const isEmailConfigured = () => !/example\.com$/i.test(FORM_SUBMIT_EMAIL) && !/YOUR_SONDER/i.test(FORM_SUBMIT_EMAIL)
-
 const orDash = (v) => (typeof v === 'string' && v.trim() ? v.trim() : '—')
 
 const priceText = (l) =>
@@ -45,10 +43,6 @@ export function buildSubmission(values, estimate) {
 
 /** Sends the payload to FormSubmit. Resolves on success, throws with a friendly message otherwise. */
 export async function sendSubmission(payload) {
-  if (!isEmailConfigured()) {
-    console.error('[form] FORM_SUBMIT_EMAIL is still the placeholder — set it in src/config.js.')
-    throw new Error('This form is not connected to an inbox yet. Please contact Sonder directly.')
-  }
   let res
   try {
     res = await fetch(FORM_SUBMIT_AJAX, {
