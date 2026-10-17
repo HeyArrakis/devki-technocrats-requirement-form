@@ -22,6 +22,7 @@ export function buildSubmission(values, estimate) {
     _captcha: 'false',
 
     CLIENT: CLIENT.name,
+    'FILLED BY': orDash(values.name),
   }
 
   if (estimate.lines.length === 0) p['SELECTED SERVICES'] = 'Nothing ticked (core website only)'

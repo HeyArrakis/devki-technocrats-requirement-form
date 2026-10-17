@@ -10,6 +10,8 @@ const SHOW_PRICES = pricesConfigured()
 
 export default function App() {
   const [selection, setSelection] = useState({})
+  const [name, setName] = useState('')
+  const [nameError, setNameError] = useState('')
   const [notes, setNotes] = useState('')
   const [status, setStatus] = useState('idle') // idle | success
   const [delivery, setDelivery] = useState('idle') // idle | sending | sent | failed
@@ -38,11 +40,18 @@ export default function App() {
   const onSubmit = (e) => {
     e.preventDefault()
     if (status === 'success') return
+    if (!name.trim()) {
+      setNameError('Please enter your name.')
+      const el = document.getElementById('fillerName')
+      el?.scrollIntoView({ behavior: 'smooth', block: 'center' })
+      el?.focus({ preventScroll: true })
+      return
+    }
     if (estimate.lines.length === 0 && !notes.trim()) {
       setSubmitError('Please tick at least one service (or add a note) before submitting.')
       return
     }
-    const payload = buildSubmission({ notes }, estimate)
+    const payload = buildSubmission({ name, notes }, estimate)
     setSubmitError('')
     setSent({ estimate, payload })
     setStatus('success')
@@ -102,6 +111,20 @@ export default function App() {
           ))}
 
           <section className="group group--notes">
+            <Field id="fillerName" label="Your name" required error={nameError}>
+              {(a11y) => (
+                <input
+                  {...a11y}
+                  name="filled_by"
+                  autoComplete="name"
+                  value={name}
+                  onChange={(e) => {
+                    setName(e.target.value)
+                    if (nameError && e.target.value.trim()) setNameError('')
+                  }}
+                />
+              )}
+            </Field>
             <Field id="notes" label="Anything else?" optional hint="Describe any custom feature here, or add other notes.">
               {(a11y) => (
                 <textarea {...a11y} name="notes" rows={3} value={notes} onChange={(e) => setNotes(e.target.value)} />

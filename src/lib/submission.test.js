@@ -5,8 +5,9 @@ import { calculateEstimate } from './pricing.js'
 describe('email payload', () => {
   it('lists each ticked service once with its price or label', () => {
     const est = calculateEstimate({ aiSmartFeatures: true, uiux: true, customFeature: true })
-    const p = buildSubmission({ notes: '' }, est)
+    const p = buildSubmission({ name: 'Asha Mehta', notes: '' }, est)
     expect(p.CLIENT).toBe('Devki Technocrats')
+    expect(p['FILLED BY']).toBe('Asha Mehta')
     expect(p['SELECTED — AI & Smart Features']).toBe('Yes — ₹5,000')
     expect(p['SELECTED — Website UI/UX Design']).toBe('Yes — ₹3,000')
     expect(p['SELECTED — Custom Website Feature']).toBe('Yes — Quoted separately')

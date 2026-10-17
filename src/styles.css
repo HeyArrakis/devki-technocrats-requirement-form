@@ -201,7 +201,8 @@ input:focus-visible + .box { outline: 2px solid var(--orange); outline-offset: 3
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation: none !important; transition: none !important; }
 }
-.group--notes { padding-top: 12px; border-top: 1px solid var(--ink); }
+.group--notes { display: grid; gap: 24px; padding-top: 16px; border-top: 1px solid var(--ink); }
+.group--notes input { max-width: 480px; }
 
 /* Fixed price bar */
 body:has(.pricebar) { padding-bottom: calc(84px + env(safe-area-inset-bottom)); }
