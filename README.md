@@ -3,13 +3,13 @@
 A simple, single-page **website requirement checklist** prepared by
 [Sonder AI Agency](https://sonderai.agency/) for Devki Technocrats.
 
-The client ticks the services they want, adds their name and phone number, and submits.
+The client ticks the services they want, optionally adds a note, and submits.
 Prices and an estimated total appear only once prices are filled in (see below). The completed form is emailed to Sonder via
 [FormSubmit](https://formsubmit.co) — there is no backend.
 
 - React 19 + Vite 8, plain CSS (Sonder light design tokens), no UI framework
 - Optional group-based pricing from one config object (hidden until set)
-- Inline validation, accessible custom checkboxes, works on mobile
+- One checkbox per service, accessible custom checkboxes, works on mobile
 - Deploys to GitHub Pages with the included GitHub Actions workflow
 
 ---
@@ -80,9 +80,9 @@ The estimate = complete website revamp + each ticked priced group (once per grou
 
 ### 3. Pricing logic (group-based)
 
-A group is charged once as soon as at least one of its options is ticked:
+Each service is a single checkbox. Grouped services list what they include and are charged once:
 
-| Group | Options | Price |
+| Service | Includes | Price |
 |-------|---------|-------|
 | Logo & Brand Identity | Logo design / redesign, Brand identity (+ brand guidelines included) | ₹2,000 |
 | Website UI/UX Design | (+ visual content design included, first iteration only) | ₹3,000 |
@@ -93,8 +93,8 @@ A group is charged once as soon as at least one of its options is ticked:
 
 ### 4. Services & copy
 
-The checklist items and the "already included" line are in `src/services.js`. Each group's
-`id` must match a key in `PRICING`.
+The checklist items, what each grouped service `includes`, and the "already included" line are
+in `src/services.js`. Each service's `id` must match a key in `PRICING`.
 
 ### 5. Client details
 
@@ -104,8 +104,8 @@ The checklist items and the "already included" line are in `src/services.js`. Ea
 
 ## The email Sonder receives
 
-FormSubmit's `box` template, in this order: **CLIENT** (name, phone/WhatsApp, company) →
-**SELECTED** services with the chosen options → **ESTIMATED INVESTMENT** (only once prices
+FormSubmit's `box` template, in this order: **CLIENT** (company name) →
+**SELECTED** services with their price → **ESTIMATED INVESTMENT** (only once prices
 are set) → **NOTES**.
 
 ---
@@ -134,7 +134,6 @@ src/
   components/          ← checklist rows and form primitives
   lib/pricing.js       ← group-based estimate (+ tests)
   lib/submission.js    ← FormSubmit payload & send (+ tests)
-  lib/validation.js    ← inline validation rules
   styles.css           ← Sonder light styles
 ```
 

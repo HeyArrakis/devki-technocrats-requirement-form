@@ -1,7 +1,7 @@
 /* ==========================================================================
    SERVICE CATALOGUE — what the client can choose.
-   Each group's `id` must match a key in PRICING (src/config.js).
-   Groups with several `items` are still priced once (see lib/pricing.js).
+   Each service is one checkbox; its `id` must match a key in PRICING (src/config.js).
+   `includes` lists what a grouped service covers — shown as text, priced once.
    ========================================================================== */
 
 /** One line telling the client what they don't need to tick. */
@@ -19,10 +19,7 @@ export const SECTIONS = [
         name: 'Logo & Brand Identity',
         description:
           'Create or refine the visual identity of your company, including logo direction, colors, typography and overall brand style.',
-        items: [
-          { id: 'logoDesign', label: 'Logo design / redesign' },
-          { id: 'brandIdentity', label: 'Brand identity' },
-        ],
+        includes: ['Logo design / redesign', 'Brand identity'],
         bonus: 'Brand guidelines included',
       },
       {
@@ -48,11 +45,11 @@ export const SECTIONS = [
         id: 'businessShowcase',
         name: 'Business Showcase',
         description: 'Professionally present what you do, what you’ve delivered and why clients can trust you.',
-        items: [
-          { id: 'capabilitiesShowcase', label: 'Services & capabilities', hint: 'Machinery, facilities, capacity and industries served.' },
-          { id: 'projectsPortfolio', label: 'Projects & portfolio', hint: 'Completed work and case studies.' },
-          { id: 'qualityCertification', label: 'Quality & certifications', hint: 'Standards, certifications and processes.' },
-          { id: 'companyProfilePdf', label: 'Company profile PDF', hint: 'A designed, downloadable profile to share with clients.' },
+        includes: [
+          'Services & capabilities — machinery, facilities, capacity and industries served',
+          'Projects & portfolio — completed work and case studies',
+          'Quality & certifications — standards, certifications and processes',
+          'Company profile PDF — a designed, downloadable profile to share with clients',
         ],
       },
       {
@@ -72,11 +69,11 @@ export const SECTIONS = [
         name: 'AI & Smart Features',
         description:
           'Add intelligent features that help visitors understand your business, submit better enquiries and streamline initial communication.',
-        items: [
-          { id: 'aiAssistant', label: 'AI Website Assistant', hint: 'Answers visitor questions about your company, any time.' },
-          { id: 'aiRfq', label: 'AI Enquiry / RFQ Assistant', hint: 'Guides buyers to share the right details with their request.' },
-          { id: 'autoEmail', label: 'Automated Email Response', hint: 'Sends a professional reply as soon as an enquiry arrives.' },
-          { id: 'aiQuotation', label: 'AI Quotation Assistant', hint: 'Helps prepare first-draft quotations from enquiries.' },
+        includes: [
+          'AI Website Assistant — answers visitor questions about your company, any time',
+          'AI Enquiry / RFQ Assistant — guides buyers to share the right details with their request',
+          'Automated Email Response — sends a professional reply as soon as an enquiry arrives',
+          'AI Quotation Assistant — helps prepare first-draft quotations from enquiries',
         ],
       },
     ],
@@ -118,6 +115,3 @@ export const SECTIONS = [
 ]
 
 export const ALL_GROUPS = SECTIONS.flatMap((s) => s.groups)
-
-/** Items for a group — single-option groups use the group itself as their one item. */
-export const itemsOf = (group) => group.items ?? [{ id: group.id, label: group.name }]

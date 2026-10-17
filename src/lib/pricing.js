@@ -1,5 +1,5 @@
 import { CURRENCY, PRICING } from '../config.js'
-import { ALL_GROUPS, itemsOf } from '../services.js'
+import { ALL_GROUPS } from '../services.js'
 
 const formatter = new Intl.NumberFormat(CURRENCY.locale, {
   style: 'currency',
@@ -23,22 +23,20 @@ export function priceLabel(groupId, pricing = PRICING) {
 }
 
 /**
- * Group-based estimate.
+ * Estimate from ticked services.
  *
- * `selection` maps groupId → array of selected item ids. A group counts once
- * as soon as it has at least one selected item — selecting more items inside
- * the same group never adds to the price. Groups without a price add nothing.
+ * `selection` maps groupId → true when that service is ticked. Each service is
+ * one checkbox, so a grouped service (e.g. Business Showcase) is charged once.
+ * Services without an amount add nothing.
  */
 export function calculateEstimate(selection, { pricing = PRICING, groups = ALL_GROUPS } = {}) {
   const lines = []
   for (const group of groups) {
-    const chosen = selection[group.id] ?? []
-    if (chosen.length === 0) continue
+    if (!selection[group.id]) continue
     const p = pricing[group.id]
     lines.push({
       groupId: group.id,
       name: group.name,
-      items: group.items ? itemsOf(group).filter((i) => chosen.includes(i.id)).map((i) => i.label) : [],
       amount: hasAmount(p) ? p.amount : null,
       label: p?.label ?? '',
       type: p?.type ?? 'fixed',

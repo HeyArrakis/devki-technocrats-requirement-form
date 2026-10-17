@@ -2,53 +2,30 @@ import { useEffect, useMemo, useRef, useState } from 'react'
 import { CLIENT } from './config.js'
 import { INCLUDED_NOTE, SECTIONS } from './services.js'
 import { calculateEstimate, formatPrice, priceLabel, pricesConfigured } from './lib/pricing.js'
-import { validateAll, validateField } from './lib/validation.js'
 import { FORM_SUBMIT_ACTION, buildSubmission, sendSubmission } from './lib/submission.js'
 import ChecklistGroup from './components/Checklist.jsx'
 import { CheckMark, Field } from './components/ui.jsx'
 
-const INITIAL_VALUES = { fullName: '', phone: '', notes: '' }
 const SHOW_PRICES = pricesConfigured()
 
 export default function App() {
   const [selection, setSelection] = useState({})
-  const [values, setValues] = useState(INITIAL_VALUES)
-  const [errors, setErrors] = useState({})
+  const [notes, setNotes] = useState('')
   const [status, setStatus] = useState('idle') // idle | sending | success | error
   const [submitError, setSubmitError] = useState('')
   const [sent, setSent] = useState(null)
 
   const estimate = useMemo(() => calculateEstimate(selection), [selection])
 
-  const toggle = (groupId, itemId) =>
-    setSelection((s) => {
-      const cur = s[groupId] ?? []
-      return { ...s, [groupId]: cur.includes(itemId) ? cur.filter((x) => x !== itemId) : [...cur, itemId] }
-    })
-
-  const setField = (name, value) => {
-    setValues((v) => ({ ...v, [name]: value }))
-    if (errors[name]) setErrors((e) => ({ ...e, [name]: validateField(name, value) }))
-  }
-  const blurField = (name) => setErrors((e) => ({ ...e, [name]: validateField(name, values[name]) }))
+  const toggle = (groupId) => setSelection((s) => ({ ...s, [groupId]: !s[groupId] }))
 
   const onSubmit = async (e) => {
     e.preventDefault()
     if (status === 'sending') return
-    const errs = validateAll(values)
-    setErrors(errs)
-    const first = Object.keys(errs)[0]
-    if (first) {
-      setSubmitError('')
-      const el = document.getElementById(first)
-      el?.scrollIntoView({ behavior: 'smooth', block: 'center' })
-      el?.focus({ preventScroll: true })
-      return
-    }
     setStatus('sending')
     setSubmitError('')
     try {
-      await sendSubmission(buildSubmission(values, estimate))
+      await sendSubmission(buildSubmission({ notes }, estimate))
       setSent(estimate)
       setStatus('success')
     } catch (err) {
@@ -89,35 +66,18 @@ export default function App() {
               </h2>
               <ul className="list">
                 {sec.groups.map((g) => (
-                  <ChecklistGroup key={g.id} group={g} chosen={selection[g.id] ?? []} onToggle={toggle} />
+                  <ChecklistGroup key={g.id} group={g} checked={!!selection[g.id]} onToggle={toggle} />
                 ))}
               </ul>
             </section>
           ))}
 
-          <section className="group" aria-labelledby="details-title">
-            <h2 id="details-title" className="group__title">Your details</h2>
-            <div className="details">
-              <Field id="fullName" label="Your name" required error={errors.fullName}>
-                {(a11y) => (
-                  <input {...a11y} name="full_name" autoComplete="name" value={values.fullName}
-                    onChange={(e) => setField('fullName', e.target.value)} onBlur={() => blurField('fullName')} />
-                )}
-              </Field>
-              <Field id="phone" label="Phone / WhatsApp" required error={errors.phone}>
-                {(a11y) => (
-                  <input {...a11y} name="phone" type="tel" inputMode="tel" autoComplete="tel" placeholder="+91 98765 43210"
-                    value={values.phone} onChange={(e) => setField('phone', e.target.value)} onBlur={() => blurField('phone')} />
-                )}
-              </Field>
-              <div className="details__full">
-                <Field id="notes" label="Anything else?" optional hint="Describe any custom feature here, or add other notes.">
-                  {(a11y) => (
-                    <textarea {...a11y} name="notes" rows={3} value={values.notes} onChange={(e) => setField('notes', e.target.value)} />
-                  )}
-                </Field>
-              </div>
-            </div>
+          <section className="group group--notes">
+            <Field id="notes" label="Anything else?" optional hint="Describe any custom feature here, or add other notes.">
+              {(a11y) => (
+                <textarea {...a11y} name="notes" rows={3} value={notes} onChange={(e) => setNotes(e.target.value)} />
+              )}
+            </Field>
           </section>
 
           <div className="submit">
@@ -144,7 +104,6 @@ export default function App() {
               <span className="mono muted">{count} {count === 1 ? 'service' : 'services'} ticked</span>
             </div>
             <div aria-live="assertive">
-              {Object.values(errors).some(Boolean) && <p className="form-error">Please fill in the highlighted fields.</p>}
               {submitError && <p className="form-error">{submitError}</p>}
             </div>
           </div>

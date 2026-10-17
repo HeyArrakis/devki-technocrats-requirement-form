@@ -15,7 +15,7 @@ const priceText = (l) =>
 
 /**
  * Builds the email payload. Keys are inserted in reading order:
- * CLIENT DETAILS → SELECTED SERVICES → ESTIMATED INVESTMENT (only if prices are set) → NOTES
+ * CLIENT → SELECTED SERVICES → ESTIMATED INVESTMENT (only if prices are set) → NOTES
  */
 export function buildSubmission(values, estimate) {
   const p = {
@@ -23,15 +23,12 @@ export function buildSubmission(values, estimate) {
     _template: 'box',
     _captcha: 'false',
 
-    'CLIENT — Name': orDash(values.fullName),
-    'CLIENT — Phone / WhatsApp': orDash(values.phone),
-    'CLIENT — Company': CLIENT.name,
+    CLIENT: CLIENT.name,
   }
 
   if (estimate.lines.length === 0) p['SELECTED SERVICES'] = 'Nothing ticked (core website only)'
   for (const line of estimate.lines) {
-    const detail = line.items.length ? `Yes — ${line.items.join(', ')}` : 'Yes'
-    p[`SELECTED — ${line.name}`] = `${detail}${priceText(line)}`
+    p[`SELECTED — ${line.name}`] = `Yes${priceText(line)}`
   }
 
   if (pricesConfigured()) {
