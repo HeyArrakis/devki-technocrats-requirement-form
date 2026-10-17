@@ -27,3 +27,17 @@ describe('email payload', () => {
     expect(calculateEstimate({ businessShowcase: false }).lines).toHaveLength(0)
   })
 })
+
+describe('sending', () => {
+  it('explains a pending FormSubmit activation clearly', async () => {
+    const { sendSubmission } = await import('./submission.js')
+    const original = globalThis.fetch
+    globalThis.fetch = async () =>
+      new Response(JSON.stringify({ success: 'false', message: 'This form needs Activation.' }), { status: 200 })
+    try {
+      await expect(sendSubmission({})).rejects.toThrow(/being activated/)
+    } finally {
+      globalThis.fetch = original
+    }
+  })
+})

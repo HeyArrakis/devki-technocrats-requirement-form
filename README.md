@@ -30,20 +30,17 @@ Requires Node 20.19+ or 22.12+.
 
 ## Configuration — everything lives in `src/config.js`
 
-### 1. Email recipient (FormSubmit) — **required before sharing**
+### 1. Email recipient (FormSubmit)
 
 ```js
 export const FORM_SUBMIT_EMAIL =
-  import.meta.env.VITE_FORM_SUBMIT_EMAIL || 'YOUR_SONDER_EMAIL@example.com'
+  import.meta.env.VITE_FORM_SUBMIT_EMAIL || 'heyarrakis@gmail.com'
 ```
 
-Replace the placeholder with Sonder's inbox, **or** leave the code alone and set a GitHub
+Submissions go to `heyarrakis@gmail.com`. To change it, edit this line **or** set a GitHub
 repository variable named `FORM_SUBMIT_EMAIL`
 (*Settings → Secrets and variables → Actions → Variables*) — the deploy workflow passes it in
 at build time.
-
-While the placeholder is in place the form will not send; it shows the client a polite
-"not connected yet" message instead.
 
 **One-time FormSubmit activation:** the very first submission to a new address does not get
 delivered — FormSubmit emails that address an *“Activate Form”* link instead. Submit one test

@@ -17,11 +17,18 @@ export default function App() {
 
   const estimate = useMemo(() => calculateEstimate(selection), [selection])
 
-  const toggle = (groupId) => setSelection((s) => ({ ...s, [groupId]: !s[groupId] }))
+  const toggle = (groupId) => {
+    setSelection((s) => ({ ...s, [groupId]: !s[groupId] }))
+    setSubmitError('')
+  }
 
   const onSubmit = async (e) => {
     e.preventDefault()
     if (status === 'sending') return
+    if (estimate.lines.length === 0 && !notes.trim()) {
+      setSubmitError('Please tick at least one service (or add a note) before submitting.')
+      return
+    }
     setStatus('sending')
     setSubmitError('')
     try {
@@ -119,7 +126,7 @@ function PriceBar({ estimate, count }) {
           </span>
         </div>
         <span className="mono pricebar__meta">
-          {estimate.showCore && <>Website {formatPrice(estimate.coreAmount)} + </>}
+          {estimate.showCore && <span className="pricebar__core">Website {formatPrice(estimate.coreAmount)} + </span>}
           {count} {count === 1 ? 'service' : 'services'}
         </span>
       </div>

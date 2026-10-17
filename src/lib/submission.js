@@ -62,7 +62,12 @@ export async function sendSubmission(payload) {
   const data = await res.json().catch(() => ({}))
   if (!res.ok || String(data.success) !== 'true') {
     console.error('[form] FormSubmit response', res.status, data)
-    throw new Error('Something went wrong while sending your form. Please try again in a moment.')
+    // Until the inbox owner clicks FormSubmit's one-time "Activate Form" email, every
+    // submission is answered with an activation notice instead of being delivered.
+    if (/activat/i.test(String(data.message ?? ''))) {
+      throw new Error('Your checklist couldn’t be delivered yet — the Sonder inbox is still being activated. Please try again in a little while.')
+    }
+    throw new Error('Something went wrong while sending your checklist. Please try again in a moment.')
   }
   return data
 }

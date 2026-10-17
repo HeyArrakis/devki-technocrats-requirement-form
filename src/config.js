@@ -3,18 +3,17 @@
    ========================================================================== */
 
 /**
- * Where completed forms are delivered (via https://formsubmit.co).
+ * Where completed checklists are delivered (via https://formsubmit.co).
  *
- * ⚠️  REPLACE THIS PLACEHOLDER with Sonder's real inbox before sharing the link.
- *     The first submission to a new address triggers an activation email from
- *     FormSubmit — click "Activate Form" in that email, after which every
- *     submission is delivered. (Optional: after activation FormSubmit gives you
- *     a random alias string you can paste here instead, to hide the address.)
+ * The first submission to a new address triggers an "Activate Form" email from
+ * FormSubmit — click it once, after which every submission is delivered.
+ * (Optional: after activation FormSubmit gives you a random alias string you can
+ * paste here instead, to hide the address from the page source.)
  *
- * Can also be set at build time with the VITE_FORM_SUBMIT_EMAIL env variable.
+ * Can also be overridden at build time with the VITE_FORM_SUBMIT_EMAIL env variable.
  */
 export const FORM_SUBMIT_EMAIL =
-  import.meta.env.VITE_FORM_SUBMIT_EMAIL || 'YOUR_SONDER_EMAIL@example.com'
+  import.meta.env.VITE_FORM_SUBMIT_EMAIL || 'heyarrakis@gmail.com'
 
 /** Client details shown across the page and pre-filled in the form. */
 export const CLIENT = {
