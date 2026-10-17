@@ -62,7 +62,7 @@ export const PRICING = {
   aiSmartFeatures: { amount: 5000 },
   localSEO: { amount: 1000 },
   advancedSEO: { amount: null, label: 'Priced on your goals' },
-  maintenance: { amount: null, label: 'Free for 6 months' },
+  supportAfter6Months: { amount: null, label: 'Quoted separately' },
 }
 ```
 

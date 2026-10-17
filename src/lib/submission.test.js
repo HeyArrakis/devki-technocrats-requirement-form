@@ -18,7 +18,7 @@ describe('email payload', () => {
   })
 
   it('totals the core website plus each ticked service once', () => {
-    const est = calculateEstimate({ businessShowcase: true, branding: true, localSEO: true, advancedSEO: true, maintenance: true })
+    const est = calculateEstimate({ businessShowcase: true, branding: true, localSEO: true, advancedSEO: true, supportAfter6Months: true })
     expect(est.oneTimeTotal).toBe(20000 + 4000 + 2000 + 1000)
     expect(buildSubmission({ notes: 'Hi' }, est)['ESTIMATED INVESTMENT']).toBe('₹27,000 (incl. complete website revamp ₹20,000)')
   })

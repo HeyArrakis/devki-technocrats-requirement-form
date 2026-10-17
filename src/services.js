@@ -100,15 +100,21 @@ export const SECTIONS = [
     id: 'support',
     letter: 'E',
     title: 'After Launch',
+    // Shown as a note above the checkbox — complimentary, so nothing to tick.
+    complimentary: {
+      title: 'Maintenance & Technical Support',
+      label: 'Complimentary for 6 months',
+      text: 'Free for the first 6 months after launch.',
+      notes: [
+        'During the 6 months, any additions, deletions or changes beyond maintenance and technical checks are charged separately, based on the work.',
+      ],
+    },
     groups: [
       {
-        id: 'maintenance',
-        name: 'Maintenance & Technical Support',
-        description: 'Free for the first 6 months after launch.',
-        notes: [
-          'Content updates after 6 months are charged separately, based on the scope of work.',
-          'During the 6 months, any additions, deletions or changes beyond maintenance and technical checks are charged separately, based on the work.',
-        ],
+        id: 'supportAfter6Months',
+        name: 'Support After 6 Months',
+        description:
+          'Tick if you’d like continued maintenance, technical support and content updates after the complimentary 6 months. Charged based on the scope of work.',
       },
     ],
   },

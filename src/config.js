@@ -69,5 +69,6 @@ export const PRICING = {
   advancedSEO: { amount: null, label: 'Priced on your goals' },
 
   // E — After launch
-  maintenance: { amount: null, label: 'Free for 6 months' },
+  // (Maintenance & technical support is complimentary for 6 months — a note, not a checkbox)
+  supportAfter6Months: { amount: null, label: 'Quoted separately' },
 }

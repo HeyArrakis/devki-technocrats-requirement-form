@@ -81,6 +81,18 @@ export default function App() {
                 <span className="mono group__letter" aria-hidden="true">{sec.letter}</span>
                 {sec.title}
               </h2>
+              {sec.complimentary && (
+                <div className="comp">
+                  <p className="comp__head">
+                    <span className="row__title">{sec.complimentary.title}</span>
+                    <span className="comp__tag mono">{sec.complimentary.label}</span>
+                  </p>
+                  <p className="row__desc">{sec.complimentary.text}</p>
+                  {sec.complimentary.notes.map((n) => (
+                    <p key={n} className="row__note">{n}</p>
+                  ))}
+                </div>
+              )}
               <ul className="list">
                 {sec.groups.map((g) => (
                   <ChecklistGroup key={g.id} group={g} checked={!!selection[g.id]} onToggle={toggle} />
